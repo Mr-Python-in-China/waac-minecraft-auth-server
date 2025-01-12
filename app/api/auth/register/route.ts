@@ -42,7 +42,7 @@ export async function POST(req: Request): Promise<Response> {
           `https://www.luogu.com/user/${data.lguid}?_contentOnly`,
           {
             timeout: 3000,
-          }
+          },
         )
       ).data;
       if (res.code === 404 && res.currentData.errorMessage === "用户未找到")
@@ -57,7 +57,7 @@ export async function POST(req: Request): Promise<Response> {
         {
           request: { ...req, text: await req.text() },
           error: e,
-        }
+        },
       );
       return response500();
     }

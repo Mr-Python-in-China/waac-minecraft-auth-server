@@ -8,7 +8,7 @@ export async function createUser(
   name: string,
   password: string,
   lguid: number,
-  deepth = 0
+  deepth = 0,
 ): Promise<{ id: number; name: string }> {
   const [saltedPassword, salt] = await saltPassword(password);
   try {
@@ -32,7 +32,7 @@ export async function createUser(
         else {
           logger.info("Create user id conflict, retrying...", e);
           return await sleep(10).then(() =>
-            createUser(name, password, lguid + 1, deepth + 1)
+            createUser(name, password, lguid + 1, deepth + 1),
           );
         }
       if (e.meta?.target === "user_name_key")

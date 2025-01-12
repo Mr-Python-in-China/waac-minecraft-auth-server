@@ -20,7 +20,9 @@
   "homepage": "https://github.com/Mr-Python-in-China/waac-minecraft-auth-server#readme",
   "dependencies": {
     "@prisma/client": "^6.2.1",
+    "@types/lodash": "^4.17.14",
     "axios": "^1.7.9",
+    "lodash": "^4.17.21",
     "next": "^15.1.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -30,6 +32,9 @@
   },
   "devDependencies": {
     "@types/node": "^22.10.5",
-    "@types/react": "^19.0.4"
+    "@types/react": "^19.0.4",
+    "eslint": "^8.57.1",
+    "eslint-config-next": "15.1.4",
+    "prettier": "^3.4.2"
   }
 }

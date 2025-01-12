@@ -1,4 +1,4 @@
-name: 'Waac Auth Server Dev Container'
+name: "Waac Auth Server Dev Container"
 
 services:
   db:
