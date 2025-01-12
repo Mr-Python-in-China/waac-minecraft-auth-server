@@ -3,13 +3,14 @@ import prisma from ".";
 import saltPassword from "@src/utils/saltPassword";
 import { sleep } from "@src/utils/utils";
 import logger from "@src/log";
+import ErrorRespnseTypes from "@src/ErrorRespnseTypes";
 
 export async function createUser(
   name: string,
   password: string,
   lguid: number,
-  deepth = 0,
-): Promise<{ id: number; name: string }> {
+  deepth = 0
+): Promise<{ id: number; name: string } | keyof ErrorRespnseTypes> {
   const [saltedPassword, salt] = await saltPassword(password);
   try {
     const len = await prisma.user.count();
@@ -32,13 +33,12 @@ export async function createUser(
         else {
           logger.info("Create user id conflict, retrying...", e);
           return await sleep(10).then(() =>
-            createUser(name, password, lguid + 1, deepth + 1),
+            createUser(name, password, lguid + 1, deepth + 1)
           );
         }
-      if (e.meta?.target === "user_name_key")
-        throw new Error("Register_nameExists");
+      if (e.meta?.target === "user_name_key") return "Register_nameExists";
       if (e.meta?.target === "user_lguid_key")
-        throw new Error("Register_LuoguUserExists");
+        return "Register_LuoguUserExists";
     }
     throw e;
   }

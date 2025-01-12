@@ -1,4 +1,4 @@
-export default interface ResponseErrors {
+export default interface ErrorRespnseTypes {
   InvalidJSON: {};
   BadRequestFormat: {};
   Register_LuoguUserNotFound: {};

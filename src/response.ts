@@ -1,4 +1,4 @@
-import ResponseErrors from "./ResponseErrors";
+import ErrorRespnseTypes from "./ErrorRespnseTypes";
 import { merge as mergeObject } from "lodash";
 
 export function responseOK(data: unknown, config?: ResponseInit) {
@@ -14,10 +14,10 @@ export function responseOK(data: unknown, config?: ResponseInit) {
   );
 }
 
-export function responseError<S extends keyof ResponseErrors>(
+export function responseError<S extends keyof ErrorRespnseTypes>(
   code: number,
   type: S,
-  data: ResponseErrors[S],
+  data: ErrorRespnseTypes[S],
   config?: ResponseInit
 ) {
   return new Response(

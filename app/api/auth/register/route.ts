@@ -42,7 +42,7 @@ export async function POST(req: Request): Promise<Response> {
           `https://www.luogu.com/user/${data.lguid}?_contentOnly`,
           {
             timeout: 3000,
-          },
+          }
         )
       ).data;
       if (res.code === 404 && res.currentData.errorMessage === "用户未找到")
@@ -57,23 +57,14 @@ export async function POST(req: Request): Promise<Response> {
         {
           request: { ...req, text: await req.text() },
           error: e,
-        },
+        }
       );
       return response500();
     }
 
-    try {
-      const user = await createUser(data.name, data.password, data.lguid);
-      return responseOK(user);
-    } catch (e) {
-      if (
-        e instanceof Error &&
-        (e.message === "Register_nameExists" ||
-          e.message === "Register_LuoguUserExists")
-      )
-        return responseError(403, e.message, {});
-      throw e;
-    }
+    const user = await createUser(data.name, data.password, data.lguid);
+    if (typeof user === "string") return responseError(403, user, {});
+    return responseOK(user);
   } catch (e) {
     if (e instanceof SyntaxError) {
       return responseError(400, "InvalidJSON", {});

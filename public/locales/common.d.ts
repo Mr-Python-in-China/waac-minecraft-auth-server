@@ -1,7 +1,7 @@
-import type ResponseErrors from "@src/ResponseErrors";
+import type ErrorRespnseTypes from "@src/ErrorRespnseTypes";
 
 type ErrorMessages = {
-  [k in keyof ResponseErrors]-?: string;
+  [k in keyof ErrorRespnseTypes]-?: string;
 };
 
 export default interface Message {
