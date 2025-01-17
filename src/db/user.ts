@@ -10,7 +10,7 @@ export async function createUser(
   name: string,
   password: string,
   lguid: number,
-  retry = 0
+  retry = 0,
 ): Promise<{ id: number; name: string } | keyof ErrorRespnseTypes> {
   const salt = randomSalt();
   const saltedPassword = await saltPassword(password, salt);
@@ -35,7 +35,7 @@ export async function createUser(
         else {
           logger.info("Create user id conflict, retrying...", e);
           return await sleep(10).then(() =>
-            createUser(name, password, lguid + 1, retry + 1)
+            createUser(name, password, lguid + 1, retry + 1),
           );
         }
       if (e.meta?.target === "user_name_key") return "Register_nameExists";
@@ -48,7 +48,7 @@ export async function createUser(
 
 export async function validateUserLogin(
   user: string,
-  password: string
+  password: string,
 ): Promise<keyof ErrorRespnseTypes | number> {
   const data = await prisma.user.findUnique({
     where: /^\d+$/.test(user) ? { id: parseInt(user) } : { name: user },

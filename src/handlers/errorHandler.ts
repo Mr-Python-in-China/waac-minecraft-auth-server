@@ -3,17 +3,17 @@ import { responseUnknownError } from "@src/response";
 import { NextRequest, NextResponse } from "next/server";
 
 function errorHandler(
-  f: (req: NextRequest) => Promise<NextResponse>
+  f: (req: NextRequest) => Promise<NextResponse>,
 ): (req: NextRequest) => Promise<NextResponse>;
 
 function errorHandler(
-  f: (req: NextRequest) => NextResponse
+  f: (req: NextRequest) => NextResponse,
 ): (req: NextRequest) => NextResponse;
 
 function errorHandler(
   f:
     | ((req: NextRequest) => Promise<NextResponse>)
-    | ((req: NextRequest) => NextResponse)
+    | ((req: NextRequest) => NextResponse),
 ) {
   return (req: NextRequest) => {
     try {
@@ -27,13 +27,10 @@ function errorHandler(
         return responseUnknownError();
       });
     } catch (e) {
-      logger.error(
-        "Unknown error happend.",
-        {
-          request: req,
-          error: e,
-        }
-      );
+      logger.error("Unknown error happend.", {
+        request: req,
+        error: e,
+      });
       return responseUnknownError();
     }
   };

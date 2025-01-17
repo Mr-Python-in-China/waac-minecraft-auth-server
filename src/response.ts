@@ -6,7 +6,7 @@ export function responseError<S extends keyof ErrorRespnseTypes>(
   code: number,
   type: S,
   data: ErrorRespnseTypes[S],
-  config?: ResponseInit
+  config?: ResponseInit,
 ) {
   return NextResponse.json(
     { error: type, data },
@@ -14,8 +14,8 @@ export function responseError<S extends keyof ErrorRespnseTypes>(
       {
         status: code,
       },
-      config
-    )
+      config,
+    ),
   );
 }
 
@@ -26,7 +26,7 @@ export function responseUnknownError<D>(data?: D, config?: ResponseInit) {
       {
         status: 500,
       },
-      config
-    )
+      config,
+    ),
   );
 }
