@@ -1,7 +1,11 @@
-export function randomRegisterToken() {
+export function randomRegisterSession() {
   const randomBytes = crypto.getRandomValues(new Uint8Array(12));
-  return "WaacRegisterToken_" + Buffer.from(randomBytes).toString("base64");
+  return "WaacRegisterSession_" + Buffer.from(randomBytes).toString("base64");
 }
 export function randomSalt() {
   return crypto.getRandomValues(new Uint8Array(32));
+}
+export function randomUserSession() {
+  const randomBytes = crypto.getRandomValues(new Uint8Array(16));
+  return Buffer.from(randomBytes).toString("base64");
 }

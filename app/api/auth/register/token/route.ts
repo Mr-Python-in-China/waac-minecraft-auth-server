@@ -1,10 +1,10 @@
 import errorHandler from "@src/handlers/errorHandler";
-import { writeRegisterToken } from "@src/redis/registerToken";
-import { randomRegisterToken } from "@src/utils/random";
+import { writeRegisterSession } from "@src/redis/registerSession";
+import { randomRegisterSession } from "@src/utils/random";
 import { NextResponse } from "next/server";
 
 export const POST = errorHandler(async () => {
-  const token = randomRegisterToken();
-  await writeRegisterToken(token);
-  return NextResponse.json({ token });
+  const session = randomRegisterSession();
+  await writeRegisterSession(session);
+  return NextResponse.json({ session });
 });

@@ -1,17 +1,19 @@
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
 import prisma from ".";
-import saltPassword from "@src/utils/saltPassword";
+import { saltPassword } from "@src/utils/utils";
 import { sleep } from "@src/utils/utils";
 import logger from "@src/log";
 import ErrorRespnseTypes from "@src/ErrorRespnseTypes";
+import { randomSalt } from "@src/utils/random";
 
 export async function createUser(
   name: string,
   password: string,
   lguid: number,
-  deepth = 0
+  retry = 0
 ): Promise<{ id: number; name: string } | keyof ErrorRespnseTypes> {
-  const [saltedPassword, salt] = await saltPassword(password);
+  const salt = randomSalt();
+  const saltedPassword = await saltPassword(password, salt);
   try {
     const len = await prisma.user.count();
     const v = await prisma.user.create({
@@ -28,12 +30,12 @@ export async function createUser(
   } catch (e) {
     if (e instanceof PrismaClientKnownRequestError && e.code === "P2002") {
       if (e.meta?.target === "user_id_key")
-        if (deepth > 20)
+        if (retry > 20)
           throw new Error("Try to create user too many times.", { cause: e });
         else {
           logger.info("Create user id conflict, retrying...", e);
           return await sleep(10).then(() =>
-            createUser(name, password, lguid + 1, deepth + 1)
+            createUser(name, password, lguid + 1, retry + 1)
           );
         }
       if (e.meta?.target === "user_name_key") return "Register_nameExists";
@@ -42,4 +44,19 @@ export async function createUser(
     }
     throw e;
   }
+}
+
+export async function validateUserLogin(
+  user: string,
+  password: string
+): Promise<keyof ErrorRespnseTypes | number> {
+  const data = await prisma.user.findUnique({
+    where: /^\d+$/.test(user) ? { id: parseInt(user) } : { name: user },
+  });
+  if (data === null) return "Login_UserNotExits";
+  const saltedPassword = await saltPassword(password, data.salt);
+  for (let i = 0; i < 32; ++i)
+    if (saltedPassword[i] !== data.password[i])
+      return "Login_PasswordIncorrect";
+  return data.id;
 }

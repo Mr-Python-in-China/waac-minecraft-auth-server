@@ -1,6 +1,6 @@
 import { createUser } from "@src/db/user";
 import errorHandler from "@src/handlers/errorHandler";
-import { ValidateRegisterToken } from "@src/redis/registerToken";
+import { ValidateRegisterSession } from "@src/redis/registerSession";
 import { responseError } from "@src/response";
 import { parseJsonOrUndefined } from "@src/utils/utils";
 import axios from "axios";
@@ -14,16 +14,16 @@ export const POST = errorHandler(async (req) => {
     data === null ||
     !("lguid" in data) ||
     typeof data.lguid !== "number" ||
-    !("token" in data) ||
-    typeof data.token !== "string" ||
+    !("session" in data) ||
+    typeof data.session !== "string" ||
     !("name" in data) ||
     typeof data.name !== "string" ||
     !("password" in data) ||
     typeof data.password !== "string"
   )
     return responseError(400, "BadRequestFormat", {});
-  if (!(await ValidateRegisterToken(data.token)))
-    return responseError(403, "Register_InvalidToken", {});
+  if (!(await ValidateRegisterSession(data.session)))
+    return responseError(403, "Register_InvalidSession", {});
   if (!/^[a-zA-Z_][a-zA-Z0-9_]{2,15}$/.test(data.name))
     return responseError(403, "Register_InvalidUsername", {});
   if (data.password.length < 8)
@@ -40,7 +40,7 @@ export const POST = errorHandler(async (req) => {
     return responseError(403, "Register_LuoguUserNotFound", {});
   if (res.code !== 200)
     throw new Error("Unknown luogu response", { cause: res });
-  if (res.currentData.user.slogan !== data.token)
+  if (res.currentData.user.slogan !== data.session)
     return responseError(403, "Register_LuoguValidateFailed", {});
 
   const user = await createUser(data.name, data.password, data.lguid);
